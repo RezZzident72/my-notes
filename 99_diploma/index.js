@@ -34,7 +34,7 @@ app.get("/", auth, (req, res) => {
   if (req.user) {
     return res.render("dashboard");
   }
-  res.render("index");
+  res.render("index", req.user);
 });
 
 const port = process.env.PORT || 3000;
