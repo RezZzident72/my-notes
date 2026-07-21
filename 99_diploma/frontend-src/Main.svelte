@@ -50,6 +50,16 @@
     return fetch({ reset: true });
   };
 
+  let searchTimer;
+
+  const handleSearchKeyUp = () => {
+    clearTimeout(searchTimer);
+
+    searchTimer = setTimeout(() => {
+      fetchFromScratch();
+    }, 350);
+  };
+
   const refetch = async () => {
     let oldPage = page;
     await fetchFromScratch({ resetNav: false });
@@ -94,16 +104,18 @@
 
 <section class="uk-flex uk-grid-collapse">
   <aside class="uk-width-1-4 uk-padding-small">
-    {#if age !== 'archive'}
-      {#if activeNoteId === 'new'}
+    {#if age !== "archive"}
+      {#if activeNoteId === "new"}
         <button disabled class="uk-button uk-button-primary uk-display-block uk-width-1-1">Новая заметка</button>
       {:else}
-        <a use:link={'/note/new'} href="/" class="uk-button uk-button-primary uk-display-block uk-width-1-1">Новая
-          заметка</a>
+        <a use:link={"/note/new"} href="/" class="uk-button uk-button-primary uk-display-block uk-width-1-1"
+          >Новая заметка</a
+        >
       {/if}
     {:else}
-      <button on:click={deleteAll} class="uk-button uk-button-secondary uk-display-block uk-width-1-1">Удалить весь
-        архив</button>
+      <button on:click={deleteAll} class="uk-button uk-button-secondary uk-display-block uk-width-1-1"
+        >Удалить весь архив</button
+      >
     {/if}
 
     <p>
@@ -115,15 +127,16 @@
         <option value="archive">архив</option>
       </select>
     </p>
-    <!-- <p class="uk-search uk-search-default uk-width-1-1">
+    <p class="uk-search uk-search-default uk-width-1-1">
       <i uk-search-icon class="uk-icon uk-search-icon fas fa-search" />
       <input
         bind:value={search}
-        on:keyup={fetchFromScratch}
+        on:keyup={handleSearchKeyUp}
         class="uk-search-input uk-width-1-1"
         type="search"
-        placeholder="Поиск по заголовку" />
-    </p> -->
+        placeholder="Поиск по заголовку"
+      />
+    </p>
 
     {#each entries as entry}
       <NoteCard {entry} isActive={entry._id === activeNoteId} />
@@ -133,9 +146,9 @@
       <Progress />
     {:then hasMore}
       {#if hasMore}
-        <button
-          on:click={loadMore}
-          class="uk-button uk-button-secondary uk-margin-top uk-display-block uk-width-1-1">Загрузить ещё&hellip;</button>
+        <button on:click={loadMore} class="uk-button uk-button-secondary uk-margin-top uk-display-block uk-width-1-1"
+          >Загрузить ещё&hellip;</button
+        >
       {/if}
     {:catch error}
       <div class="uk-alert uk-alert-danger">
@@ -150,6 +163,7 @@
       on:routeEvent={routeEvent}
       on:routeLoaded={() => {
         window.scrollTo(0, 0);
-      }} />
+      }}
+    />
   </div>
 </section>

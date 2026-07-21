@@ -1,4 +1,4 @@
-const PREFIX = "???";
+const PREFIX = "/api";
 
 const req = (url, options = {}) => {
   const { body } = options;
@@ -19,24 +19,60 @@ const req = (url, options = {}) => {
       ? res.json()
       : res.text().then((message) => {
           throw new Error(message);
-        })
+        }),
   );
 };
 
-export const getNotes = ({ age, search, page } = {}) => {};
+export const getNotes = ({ age, search, page } = {}) => {
+  return req(`/notes?page=${page || 1}&age=${age || "1month"}&search=${search || ""}`, {
+    method: "GET",
+  });
+};
 
-export const createNote = (title, text) => {};
+export const createNote = (title, text) => {
+  return req("/notes", {
+    method: "POST",
+    body: { title, text },
+  });
+};
 
-export const getNote = (id) => {};
+export const getNote = (id) => {
+  return req(`/notes/${id}`);
+};
 
-export const archiveNote = {};
+export const editNote = (id, title, text) => {
+  return req(`/notes/${id}`, {
+    method: "POST",
+    body: { title, text },
+  });
+};
 
-export const unarchiveNote = {};
+export const archiveNote = (id) => {
+  return req(`/notes/${id}`, {
+    method: "PATCH",
+    body: { isArchived: true },
+  });
+};
 
-export const editNote = (id, title, text) => {};
+export const unarchiveNote = (id) => {
+  return req(`/notes/${id}`, {
+    method: "PATCH",
+    body: { isArchived: false },
+  });
+};
 
-export const deleteNote = (id) => {};
+export const deleteNote = (id) => {
+  return req(`/notes/${id}`, {
+    method: "DELETE",
+  });
+};
 
-export const deleteAllArchived = () => {};
+export const deleteAllArchived = () => {
+  return req("/notes?clear=archive", {
+    method: "DELETE",
+  });
+};
 
-export const notePdfUrl = (id) => {};
+export const notePdfUrl = (id) => {
+  return `/api/notes/pdf/${id}`;
+};
