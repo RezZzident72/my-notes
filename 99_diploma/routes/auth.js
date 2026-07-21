@@ -57,7 +57,7 @@ router.post("/signup", auth, async (req, res) => {
 
     const [newUser] = await db("users").insert({ name: username, password: hashPassord }).returning("*");
 
-    const welcomeText = fs.readFile(path.join(__dirname, "../templates/welcome.md"), "utf8")
+    const welcomeText = await fs.readFile(path.join(__dirname, "../templates/welcome.md"), "utf8")
     await db("notes").insert({
       userId: newUser._id,
       title: "Добро пожаловать! 👋",
