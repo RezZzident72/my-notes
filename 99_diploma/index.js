@@ -32,9 +32,9 @@ app.use("/api/notes", notesRoutes);
 
 app.get("/", auth, (req, res) => {
   if (req.user) {
-    return res.render("dashboard", req.user.name);
+    return res.render("dashboard", {user: req.user });
   }
-  res.render("index", req.user);
+  res.render("index", { user: req.user });
 });
 
 const port = process.env.PORT || 3000;
