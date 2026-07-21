@@ -32,7 +32,7 @@ app.use("/api/notes", notesRoutes);
 
 app.get("/", auth, (req, res) => {
   if (req.user) {
-    return res.render("dashboard");
+    return res.render("dashboard", req.user.name);
   }
   res.render("index", req.user);
 });
