@@ -10,6 +10,8 @@
 
   let textarea;
 
+  let isSaving = false;
+
   onMount(() => {
     const mdEditor = new EasyMDE({ element: textarea, forceSync: true, status: false });
     return () => {
@@ -20,12 +22,20 @@
   });
 
   const save = async () => {
+    if (isSaving) return;
     const text = textarea.value;
     if (!title && !text) {
       return;
     }
-    const note = await createNote(title, text);
-    dispatch("routeEvent", { type: "note-created", id: note._id });
+    try {
+      isSaving = true;
+      const note = await createNote(title, text);
+      dispatch("routeEvent", { type: "note-created", id: note._id });
+    } catch (error) {
+      console.error("Ошибка при сохранении заметки:", error);
+    } finally {
+      isSaving = false;
+    }
   };
 
   const cancel = () => {
@@ -34,7 +44,13 @@
 </script>
 
 <div class="uk-margin-bottom">
-  <button on:click={save} class="uk-button uk-button-primary"><i class="fas fa-save" />&nbsp;Сохранить</button>
+  <button
+    on:click={save}
+    disabled={isSaving}
+    class="uk-button uk-button-primary"
+  >
+    <i class="fas fa-save" />&nbsp;{isSaving ? 'Сохранение...' : 'Сохранить'}
+  </button>
   <button on:click={cancel} class="uk-button uk-button-default"><i class="fas fa-undo" />&nbsp;Отмена</button>
 </div>
 
